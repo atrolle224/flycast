@@ -196,6 +196,13 @@ Option<bool> OmxAudioHdmi("audio_hdmi", true, "omx");
 // Maple
 
 Option<int> MouseSensitivity("MouseSensitivity", 100, "input");
+Option<bool> AllControllersPlayer1("AllControllersPlayer1",
+#ifdef __ANDROID__
+	true,
+#else
+	false,
+#endif
+	"input");
 Option<int> VirtualGamepadVibration("VirtualGamepadVibration", 20, "input");
 Option<int> VirtualGamepadTransparency("VirtualGamepadTransparency", 37, "input");
 

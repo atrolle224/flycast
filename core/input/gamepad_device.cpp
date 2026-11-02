@@ -19,6 +19,7 @@
 
 #include "gamepad_device.h"
 #include "cfg/cfg.h"
+#include "cfg/option.h"
 #include "stdclass.h"
 #include "ui/gui.h"
 #include "emulator.h"
@@ -793,6 +794,9 @@ void GamepadDevice::Register(const std::shared_ptr<GamepadDevice>& gamepad)
 			MAPLE_PORT_CFG_PREFIX + gamepad->unique_id(), 12345);
 	if (maple_port != 12345)
 		gamepad->set_maple_port(maple_port);
+	else if (config::AllControllersPlayer1 && gamepad->maple_port() > 0 && gamepad->maple_port() < 4)
+		// a handheld's built-in pad and a Bluetooth one both play as player 1
+		gamepad->set_maple_port(0);
 #ifdef TEST_AUTOMATION
 	if (record_input == NULL)
 	{

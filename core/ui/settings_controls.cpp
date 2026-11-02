@@ -1100,6 +1100,8 @@ void gui_settings_controls(std::array<bool, 4>& mapleDevicesChanges, std::array<
 
 	ImGui::Spacing();
 	OptionSlider(T("Mouse sensitivity"), config::MouseSensitivity, 1, 500);
+	OptionCheckbox(T("All controllers play as player 1"), config::AllControllersPlayer1,
+			T("New controllers join port A, so a built-in pad and a Bluetooth one both control player 1. A port chosen for a controller above still applies."));
 #if defined(_WIN32) && !defined(TARGET_UWP)
 	OptionCheckbox(T("Use Raw Input"), config::UseRawInput, T("Supports multiple pointing devices (mice, light guns) and keyboards"));
 #endif

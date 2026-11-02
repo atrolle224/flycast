@@ -1,0 +1,49 @@
+name: Android 477M
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [rg477m]
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: arm64 only, the fixed debug key
+        run: |
+          sed -i 's/signingConfigs.getByName("release")/signingConfigs.getByName("debug")/' shell/android-studio/flycast/build.gradle.kts
+          sed -i 's/versionCode = 8/versionCode = ${{ github.run_number }}/' shell/android-studio/flycast/build.gradle.kts
+          sed -i 's/testInstrumentationRunner = /ndk { abiFilters += "arm64-v8a" }\n        testInstrumentationRunner = /' shell/android-studio/flycast/build.gradle.kts
+
+      - name: Gradle
+        working-directory: shell/android-studio
+        run: ./gradlew assembleRelease --parallel
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flycast-477m-arm64
+          path: shell/android-studio/flycast/build/outputs/apk/release/flycast-release.apk
+
+      - name: Keep only the newest build
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run list -R "$GITHUB_REPOSITORY" -w "Android 477M" -L 50 --json databaseId \
+            --jq ".[].databaseId | select(. != ${{ github.run_id }})" | while read -r id; do
+            gh run delete "$id" -R "$GITHUB_REPOSITORY" || true
+          done

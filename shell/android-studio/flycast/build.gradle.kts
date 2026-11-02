@@ -18,7 +18,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.flycast.emulator"
+        applicationId = "com.flycast.emulator.rg477m"
         minSdk = 21
         targetSdk = 36
         versionCode = 8
