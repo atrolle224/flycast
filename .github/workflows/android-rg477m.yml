@@ -18,6 +18,10 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      # the version (and RetroAchievements' client check) comes from git describe: needs the release tags
+      - name: Release tags
+        run: git fetch --no-recurse-submodules --tags https://github.com/flyinghead/flycast.git || true
+
       - uses: actions/setup-java@v5
         with:
           java-version: '17'
